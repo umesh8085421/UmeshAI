@@ -1,0 +1,46 @@
+
+name: Build Umesh AI APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip python3-pip \
+            build-essential autoconf libtool \
+            pkg-config zlib1g-dev libncurses5-dev \
+            libncursesw5-dev libtinfo6 cmake \
+            libffi-dev libssl-dev automake gettext
+
+      - name: Install Buildozer
+        run: |
+          python3 -m pip install --user \
+            --break-system-packages \
+            buildozer setuptools cython==0.29.34
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Build APK
+        run: buildozer -v android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: UmeshAI-APK
+          path: bin/*.apk
