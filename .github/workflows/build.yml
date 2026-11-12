@@ -37,8 +37,7 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Build APK
-        run: buildozer -v android debug
-
+         run: yes | buildozer -v android debug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
