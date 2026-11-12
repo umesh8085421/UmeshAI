@@ -1,45 +1,56 @@
 
-name: Build Umesh AI APK
+name: Build UmeshAI APK
 
 on:
-  workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: '17'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            git zip unzip python3-pip \
-            build-essential autoconf libtool libtool-bin \
-            pkg-config zlib1g-dev libncurses5-dev \
+            git zip unzip \
+            build-essential autoconf automake \
+            libtool libtool-bin pkg-config \
+            zlib1g-dev libncurses5-dev \
             libncursesw5-dev libtinfo6 cmake \
-            libffi-dev libssl-dev automake gettext
+            libffi-dev libssl-dev
 
       - name: Install Buildozer
         run: |
-          python3 -m pip install --user \
+          python -m pip install --upgrade pip
+          python -m pip install --user \
             --break-system-packages \
             buildozer setuptools cython==0.29.34
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Build APK
-         run: yes | buildozer -v android debug
+        run: yes | buildozer -v android debug
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: UmeshAI-APK
           path: bin/*.apk
+          if-no-files-found: error
