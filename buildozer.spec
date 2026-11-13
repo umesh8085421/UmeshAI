@@ -1,11 +1,13 @@
+
 [app]
 title = Umesh AI
 package.name = umeshai
 package.domain = org.umeshai
 source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
-version = 1.0.0
-requirements = python3,kivy,requests,plyer,pyjnius
+source.include_exts = py,png,jpg,kv,atlas,ttf,otf
+source.include_patterns = **/*.ttf,**/*.otf
+version = 1.1.0
+requirements = python3,kivy,requests,plyer,pillow
 orientation = portrait
 fullscreen = 0
 android.permissions = INTERNET,RECORD_AUDIO
